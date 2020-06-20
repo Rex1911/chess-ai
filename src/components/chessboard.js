@@ -11,7 +11,9 @@ class ChessBoard extends React.Component {
 		gameStatus: "Running",
 		currentPlayer: null,
 		squareStyles: {},
-		draggable: true
+		draggable: true,
+		searchDepth: 3,
+		moveTime: 0 + "s"
 	}
 
 	componentDidMount = () => {
@@ -40,14 +42,15 @@ class ChessBoard extends React.Component {
 		}
 
 		this.setState({ fen: game.fen(), currentPlayer: game.turn() , squareStyles: {}});
-		this.makeAIMove()
+		setTimeout(() => {this.makeAIMove()},50)
 	};
 
 	makeAIMove = () => {
 		console.log("Making AI Move")
-		let bestMove = AI.getBestMove(game);
-		console.log(bestMove);
-		game.move(bestMove)
+		let d1 = new Date()
+		let res = AI.minimax(game, this.state.searchDepth, false);
+		let d2 = new Date()
+		game.move(res.bestMove)
 
 		if (game.game_over()) {
 			this.setState({
@@ -58,7 +61,7 @@ class ChessBoard extends React.Component {
 			return;
 		}
 
-		this.setState({ fen: game.fen(), currentPlayer: game.turn() , squareStyles: {}});
+		this.setState({ fen: game.fen(), currentPlayer: game.turn() , squareStyles: {}, moveTime: (d2-d1)/1000 + "s"});
 	}
 
 	handleClick = s => {
@@ -81,8 +84,9 @@ class ChessBoard extends React.Component {
 					squareStyles={this.state.squareStyles}
 					draggable={this.state.draggable}
 				/>
-				<h3>Game status: {this.state.gameStatus}</h3>
-				<h3>Current Player: {this.state.currentPlayer}</h3>
+				<p>Game status: {this.state.gameStatus}</p>
+				<p>Current Player: {this.state.currentPlayer}</p>
+				<p>Move Time: {this.state.moveTime}</p>
 			</div>
 		);
 	}
