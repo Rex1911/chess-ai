@@ -1,6 +1,7 @@
 import React from "react";
 import Chessboard from "chessboardjsx";
 import Chess from "chess.js";
+import AI from "../util/AI";
 
 let game;
 
@@ -43,12 +44,10 @@ class ChessBoard extends React.Component {
 	};
 
 	makeAIMove = () => {
-		console.log("making AI Move")
-		let possibleMoves = game.moves();
-		console.log(possibleMoves)
-		let selectedMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)]
-		console.log(selectedMove);
-		game.move(selectedMove)
+		console.log("Making AI Move")
+		let bestMove = AI.getBestMove(game);
+		console.log(bestMove);
+		game.move(bestMove)
 
 		if (game.game_over()) {
 			this.setState({
