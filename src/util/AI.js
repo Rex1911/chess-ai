@@ -47,20 +47,24 @@ class AI {
 	static getBestMove = (game) => {
 		let possibleMoves = game.moves()
 		let bestEvalValue = 9999
-		let bestMove = null;
+		let bestMove = [];
 
 		for(let i = 0; i < possibleMoves.length; i++) {
 			let currentMove = possibleMoves[i];
 			game.move(currentMove);
 
 			let currentEvalValue = this.evaluate(game)
-			if(currentEvalValue < bestEvalValue) {
-				bestMove = currentMove
+			if(currentEvalValue == bestEvalValue) {
+				bestMove.push(currentMove)
+				bestEvalValue = currentEvalValue;
+			} else if(currentEvalValue < bestEvalValue) {
+				bestMove = [];
+				bestMove.push(currentMove)
 				bestEvalValue = currentEvalValue;
 			}
 			game.undo();
 		}
-		return bestMove;
+		return bestMove[Math.floor(Math.random() * bestMove.length)];
 	}
 }
 

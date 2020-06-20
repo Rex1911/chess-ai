@@ -66,7 +66,7 @@ class ChessBoard extends React.Component {
 		let temp = {}
 		potentialMoves.forEach(move => {
 			let formatted = move.match(/([a-z][1-9])/g)
-			temp[formatted[0]] = {backgroundColor: "blue", opacity: 0.4}
+			if (formatted != null) temp[formatted[0]] = {backgroundColor: "blue", opacity: 0.4}
 		})
 		this.setState({ squareStyles: temp });
 	};
