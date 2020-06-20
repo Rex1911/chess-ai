@@ -6,10 +6,11 @@ let game;
 
 class ChessBoard extends React.Component {
 	state = {
-		fen: "start",
+		fen: 'start',
 		gameStatus: "Running",
 		currentPlayer: null,
-		squareStyles: {}
+		squareStyles: {},
+		draggable: true
 	}
 
 	componentDidMount = () => {
@@ -30,7 +31,8 @@ class ChessBoard extends React.Component {
 		if (game.game_over()) {
 			this.setState({
 				fen: game.fen(),
-				gameStatus: "Player " + this.state.currentPlayer + " won."
+				gameStatus: "Player " + this.state.currentPlayer + " won.",
+				draggable: false
 			});
 			return;
 		}
@@ -56,8 +58,9 @@ class ChessBoard extends React.Component {
 				<Chessboard
 					position={this.state.fen}
 					onDrop={this.validate}
-					onSquareClick={this.handleClick}
+					onMouseOverSquare={this.handleClick}
 					squareStyles={this.state.squareStyles}
+					draggable={this.state.draggable}
 				/>
 				<h3>Game status: {this.state.gameStatus}</h3>
 				<h3>Current Player: {this.state.currentPlayer}</h3>
