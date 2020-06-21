@@ -49,8 +49,9 @@ class ChessBoard extends React.Component {
 		console.log("Making AI Move")
 		let d1 = new Date()
 		let res = AI.minimax(game, this.state.searchDepth, false);
+		console.log(res)
 		let d2 = new Date()
-		game.move(res.bestMove)
+		game.ugly_move(res.bestMove)
 
 		if (game.game_over()) {
 			this.setState({

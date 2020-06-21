@@ -46,13 +46,13 @@ class AI {
 	}
 	
 	static getBestMove = (game) => {
-		let possibleMoves = game.moves()
+		let possibleMoves = game.ugly_moves()
 		let bestEvalValue = 9999
 		let bestMove = [];
 
 		for(let i = 0; i < possibleMoves.length; i++) {
 			let currentMove = possibleMoves[i];
-			game.move(currentMove);
+			game.ugly_move(currentMove);
 
 			let currentEvalValue = this.evaluate(game)
 			if(currentEvalValue == bestEvalValue) {
@@ -75,12 +75,12 @@ class AI {
 
 		if(maximizingPlayer) {
 			let maxEval = -9999
-			let possibleMoves = game.moves()
+			let possibleMoves = game.ugly_moves()
 			let bestMove = [];
 
 			for(let i = 0; i < possibleMoves.length; i++) {
 				let currentMove = possibleMoves[i];
-				game.move(currentMove);
+				game.ugly_move(currentMove);
 				let res = this.minimax(game, depth - 1, false)
 				game.undo();
 				if(res.eval == maxEval) {
@@ -95,12 +95,12 @@ class AI {
 			return {eval: maxEval, bestMove: bestMove[Math.floor(Math.random() * bestMove.length)]}
 		} else {
 			let minEval = 9999
-			let possibleMoves = game.moves()
+			let possibleMoves = game.ugly_moves()
 			let bestMove = [];
 
 			for(let i = 0; i < possibleMoves.length; i++) {
 				let currentMove = possibleMoves[i];
-				game.move(currentMove);
+				game.ugly_move(currentMove);
 				let res = this.minimax(game, depth - 1, true)
 				game.undo();
 				if(res.eval == minEval) {
