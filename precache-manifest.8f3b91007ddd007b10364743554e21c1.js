@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "7ea26bc104e65034b250e81873352f02",
+    "revision": "e8c61b33725555d82b3b78c64c31a6cf",
     "url": "/chess-ai/index.html"
   },
   {
