@@ -7,14 +7,14 @@ let game;
 
 class ChessBoard extends React.Component {
 	state = {
-		fen: 'start',
+		fen: "start",
 		gameStatus: "Running",
 		currentPlayer: null,
 		squareStyles: {},
 		draggable: true,
 		searchDepth: 3,
 		moveTime: 0 + "s"
-	}
+	};
 
 	componentDidMount = () => {
 		game = new Chess();
@@ -41,17 +41,30 @@ class ChessBoard extends React.Component {
 			return;
 		}
 
-		this.setState({ fen: game.fen(), currentPlayer: game.turn() , squareStyles: {}});
-		setTimeout(() => {this.makeAIMove()},50)
+		this.setState({
+			fen: game.fen(),
+			currentPlayer: game.turn(),
+			squareStyles: {}
+		});
+		setTimeout(() => {
+			this.makeAIMove();
+		}, 50);
 	};
 
 	makeAIMove = () => {
-		console.log("Making AI Move")
-		let d1 = new Date()
-		let res = AI.minimax(game, this.state.searchDepth, false);
-		console.log(res)
-		let d2 = new Date()
-		game.ugly_move(res.bestMove)
+		AI.calcMoves = 0;
+		let d1 = new Date();
+		let res = AI.minimax(
+			game,
+			this.state.searchDepth,
+			-99999,
+			99999,
+			false
+		);
+		console.log(res);
+		console.log(AI.calcMoves);
+		let d2 = new Date();
+		game.ugly_move(res.bestMove);
 
 		if (game.game_over()) {
 			this.setState({
@@ -62,16 +75,22 @@ class ChessBoard extends React.Component {
 			return;
 		}
 
-		this.setState({ fen: game.fen(), currentPlayer: game.turn() , squareStyles: {}, moveTime: (d2-d1)/1000 + "s"});
-	}
+		this.setState({
+			fen: game.fen(),
+			currentPlayer: game.turn(),
+			squareStyles: {},
+			moveTime: (d2 - d1) / 1000 + "s"
+		});
+	};
 
 	handleClick = s => {
 		let potentialMoves = game.moves({ square: s });
-		let temp = {}
+		let temp = {};
 		potentialMoves.forEach(move => {
-			let formatted = move.match(/([a-z][1-9])/g)
-			if (formatted != null) temp[formatted[0]] = {backgroundColor: "blue", opacity: 0.4}
-		})
+			let formatted = move.match(/([a-z][1-9])/g);
+			if (formatted != null)
+				temp[formatted[0]] = { backgroundColor: "blue", opacity: 0.4 };
+		});
 		this.setState({ squareStyles: temp });
 	};
 

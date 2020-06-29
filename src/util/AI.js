@@ -1,9 +1,9 @@
 class AI {
-	static depth = 3;
-	static getPieceValue = (piece,color) => {
-		let val = 0
+	static calcMoves = 0;
+	static getPieceValue = (piece, color) => {
+		let val = 0;
 
-		switch(piece) {
+		switch (piece) {
 			case "p":
 				val = 10;
 				break;
@@ -24,97 +24,92 @@ class AI {
 				break;
 		}
 
-		let finalVal = color == "w" ? val : -val
+		let finalVal = color == "w" ? val : -val;
 		return finalVal;
-	}
-	
-	static evaluate = (game) => {
-		let board = game.board()
+	};
+
+	static evaluate = game => {
+		let board = game.board();
 		let score = 0;
 
-		for(let i = 0; i < board.length; i++) {
-			for(let j = 0; j < board[i].length; j++) {
-				if(board[i][j] != null) {
-					let piece = board[i][j].type
-					let color = board[i][j].color
+		for (let i = 0; i < board.length; i++) {
+			for (let j = 0; j < board[i].length; j++) {
+				if (board[i][j] != null) {
+					let piece = board[i][j].type;
+					let color = board[i][j].color;
 
-					score = score + this.getPieceValue(piece,color)
+					score = score + this.getPieceValue(piece, color);
 				}
 			}
 		}
 		return score;
-	}
-	
-	static getBestMove = (game) => {
-		let possibleMoves = game.ugly_moves()
-		let bestEvalValue = 9999
-		let bestMove = [];
+	};
 
-		for(let i = 0; i < possibleMoves.length; i++) {
-			let currentMove = possibleMoves[i];
-			game.ugly_move(currentMove);
-
-			let currentEvalValue = this.evaluate(game)
-			if(currentEvalValue == bestEvalValue) {
-				bestMove.push(currentMove)
-				bestEvalValue = currentEvalValue;
-			} else if(currentEvalValue < bestEvalValue) {
-				bestMove = [];
-				bestMove.push(currentMove)
-				bestEvalValue = currentEvalValue;
-			}
-			game.undo();
+	static minimax = (game, depth, alpha, beta, maximizingPlayer) => {
+		this.calcMoves++;
+		if (depth == 0 || game.game_over()) {
+			return { eval: this.evaluate(game), bestMove: null };
 		}
-		return bestMove[Math.floor(Math.random() * bestMove.length)];
-	}
-
-	static minimax = (game, depth, maximizingPlayer) => {
-		if(depth == 0 || game.game_over()) {
-			return {eval: this.evaluate(game), bestMove: null}
-		}
-
-		if(maximizingPlayer) {
-			let maxEval = -9999
-			let possibleMoves = game.ugly_moves()
+		if (maximizingPlayer) {
+			let maxEval = -9999;
+			let possibleMoves = game.ugly_moves();
 			let bestMove = [];
 
-			for(let i = 0; i < possibleMoves.length; i++) {
+			for (let i = 0; i < possibleMoves.length; i++) {
 				let currentMove = possibleMoves[i];
 				game.ugly_move(currentMove);
-				let res = this.minimax(game, depth - 1, false)
+				let res = this.minimax(game, depth - 1, alpha, beta, false);
 				game.undo();
-				if(res.eval == maxEval) {
+				if (res.eval == maxEval) {
 					maxEval = res.eval;
-					bestMove.push(currentMove)
-				} else if(res.eval > maxEval) {
+					bestMove.push(currentMove);
+				} else if (res.eval > maxEval) {
 					bestMove = [];
-					bestMove.push(currentMove)
+					bestMove.push(currentMove);
 					maxEval = res.eval;
 				}
+
+				alpha = Math.max(alpha, res.eval);
+
+				if (alpha >= beta) {
+					break;
+				}
 			}
-			return {eval: maxEval, bestMove: bestMove[Math.floor(Math.random() * bestMove.length)]}
+			return {
+				eval: maxEval,
+				bestMove: bestMove[Math.floor(Math.random() * bestMove.length)]
+			};
 		} else {
-			let minEval = 9999
-			let possibleMoves = game.ugly_moves()
+			let minEval = 9999;
+			let possibleMoves = game.ugly_moves();
 			let bestMove = [];
 
-			for(let i = 0; i < possibleMoves.length; i++) {
+			for (let i = 0; i < possibleMoves.length; i++) {
 				let currentMove = possibleMoves[i];
 				game.ugly_move(currentMove);
-				let res = this.minimax(game, depth - 1, true)
+				let res = this.minimax(game, depth - 1, alpha, beta, true);
 				game.undo();
-				if(res.eval == minEval) {
+				if (res.eval == minEval) {
 					minEval = res.eval;
-					bestMove.push(currentMove)
-				} else if(res.eval < minEval) {
+					bestMove.push(currentMove);
+				} else if (res.eval < minEval) {
 					bestMove = [];
-					bestMove.push(currentMove)
+					bestMove.push(currentMove);
 					minEval = res.eval;
 				}
+
+				beta = Math.min(beta, res.eval);
+
+				if (beta <= alpha) {
+					break;
+				}
 			}
-			return {eval: minEval, bestMove: bestMove[Math.floor(Math.random() * bestMove.length)]}
+			return {
+				eval: minEval,
+				bestMove: bestMove[Math.floor(Math.random() * bestMove.length)]
+			};
 		}
-	}
+	};
 }
 
-export default AI
+export default AI;
