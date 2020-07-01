@@ -57,8 +57,8 @@ class ChessBoard extends React.Component {
 		let res = AI.minimax(
 			game,
 			this.state.searchDepth,
-			-99999,
-			99999,
+			-9999,
+			9999,
 			false
 		);
 		console.log(res);
@@ -94,6 +94,10 @@ class ChessBoard extends React.Component {
 		this.setState({ squareStyles: temp });
 	};
 
+	Click = () => {
+		console.log(game.turn());
+	}
+
 	render() {
 		return (
 			<div>
@@ -107,6 +111,7 @@ class ChessBoard extends React.Component {
 				<p>Game status: {this.state.gameStatus}</p>
 				<p>Current Player: {this.state.currentPlayer}</p>
 				<p>Move Time: {this.state.moveTime}</p>
+				<button onClick={this.Click}>Current Player</button>
 			</div>
 		);
 	}

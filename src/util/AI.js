@@ -29,6 +29,14 @@ class AI {
 	};
 
 	static evaluate = game => {
+		if(game.in_checkmate()) {
+			if(game.turn() == "w") {
+				return -9999
+			} else if(game.turn() == "b") {
+				return 9999
+			}
+		}
+		
 		let board = game.board();
 		let score = 0;
 
